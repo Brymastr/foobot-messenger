@@ -1,9 +1,7 @@
 const 
   config = require('./config')(),
   rabbit = require('amqplib'),
-  messenger = require('./messenger'),
-  fork = require('child_process').fork,
-  request = require('request-promise-native');
+  fork = require('child_process').fork;
 
 // Queues to subscribe to
 const queues = new Map();
@@ -50,8 +48,6 @@ const queuePromise = () => new Promise((resolve, reject) => {
 
 const queueConnectionPromise = () => rabbit.connect(config.rabbit_url);
 
-const getUrl = () => request.get(config.foobot_core_url + '/info/webhook');
-
 const start = () => {
   queues.forEach((value, key) => {
     fork(__dirname + '/subscribe', [key], {silent: false, stdio: 'pipe'});
@@ -61,15 +57,8 @@ const start = () => {
 
 retry(queueConnectionPromise, 'connect to rabbit at' + config.rabbit_url, 10, 5000)
   .then(conn => retry(checkExchangePromise, 'check exchange', 5, 5000))
-  .then(exchange => {
-    
-    const promises = [
-      queuePromise,
-      getUrl
-    ];
-    
-    Promise.all(promises.map(p => retry(p, '', 20, 1000))).then(() => start());
-  });
+  .then(exchange => retry(queuePromise, 'assert queues', 5, 500))
+  .then(() => start());
   
 /**
  * Retry a promise
