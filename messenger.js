@@ -38,7 +38,12 @@ exports.sendTyping = message => new Promise(resolve => {
       },
       sender_action: 'typing_on'
     }
-  }).then(resolve).catch(console.warn);
+  }).then(body => {
+    let length = message.response.length;
+    let delay = Math.random() * 2;
+    let timeout = (0.02 * length + delay) * 1000;
+    setTimeout(resolve, timeout);
+  }).catch(console.warn);
 });
 
 exports.process = (connection, message) => {
