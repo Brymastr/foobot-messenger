@@ -10,7 +10,7 @@ exports.send = message => new Promise(resolve => {
     .then(resolve);
 });
 
-exports.sendMessage = message => new rromise(resolve => {
+exports.sendMessage = message => new Promise(resolve => {
  request.post(config.messenger.url, {
     qs: {
       access_token: config.messenger.page_access_token
