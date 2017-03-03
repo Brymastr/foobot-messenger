@@ -1,6 +1,7 @@
 const
   request = require('request-promise-native'),
-  config = require('./config.js')();
+  config = require('./config.js')(),
+  rabbit = require('./rabbit');
 
 // Send with typing
 exports.send = message => new Promise(resolve => {
