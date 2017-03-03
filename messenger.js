@@ -1,11 +1,9 @@
 const
-  request = require('request'),
-  Message = require('../models/Message'),
-  log = require('../logger'),
-  config = require('../config.json');
+  request = require('request-promise-native'),
+  config = require('./config.js')();
 
-exports.sendMessage = (message, done) => {
-  request.post(config.messenger.url, {
+exports.sendMessage = message => new rromise(resolve => {
+ request.post(config.messenger.url, {
     qs: {
       access_token: config.messenger.page_access_token
     },
@@ -18,14 +16,10 @@ exports.sendMessage = (message, done) => {
         attachment: message.reply_markup
       }
     }
-  }, (err, response, body) => {
-    if(err) log.error(err);    
-    done(body);
-  });
-};
+  }).then(resolve).catch(console.warn);
+});
 
-exports.sendTyping = (message, done) => {
-
+exports.sendTyping = message => new Promise(resolve => {
   request.post(config.messenger.url, {
     qs: {
       access_token: config.messenger.page_access_token
@@ -36,12 +30,8 @@ exports.sendTyping = (message, done) => {
       },
       sender_action: 'typing_on'
     }
-  }, (err, response, body) => {
-    if(err) log.error(err);
-    done(body);
-  });
-
-};
+  }).then(resolve).catch(console.warn);
+});
 
 exports.process = (connection, message) => {
   if(message._id) {
@@ -54,7 +44,7 @@ exports.process = (connection, message) => {
   }
 }
 
-exports.normalize = update => {
+exports.normalize = update => new Promise(resolve => {
   update = update.entry[0].messaging[0];
 
   if(update.account_linking) return {text: '', action: 'account linking', platform_from: {id: update.sender.id}};
@@ -73,5 +63,5 @@ exports.normalize = update => {
   if(update.postback) message.text = 'postback';
   else if(update.optin) message.text = 'optin';
 
-  return message;
-}
+  resolve(message);
+});

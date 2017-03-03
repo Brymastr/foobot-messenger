@@ -1,7 +1,7 @@
 const
   config = require('./config')(),
   rabbit = require('amqplib'),
-  telegram = require('./messenger'),
+  messenger = require('./messenger'),
   queue = process.argv[2];
 
 rabbit.connect(config.rabbit_url).then(connection => {
