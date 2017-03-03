@@ -2,6 +2,13 @@ const
   request = require('request-promise-native'),
   config = require('./config.js')();
 
+// Send with typing
+exports.send = message => new Promise(resolve => {
+  this.sendTyping(message)
+    .then(() => this.sendMessage(message))
+    .then(resolve);
+});
+
 exports.sendMessage = message => new rromise(resolve => {
  request.post(config.messenger.url, {
     qs: {
