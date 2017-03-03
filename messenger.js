@@ -55,6 +55,7 @@ exports.normalize = update => new Promise(resolve => {
     text: update.message.text,
     chat_id: update.sender.id,
     date: update.timestamp,
+    source: 'messenger',
     platform_from: {
       id: update.sender.id
     }
