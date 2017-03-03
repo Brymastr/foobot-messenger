@@ -1,0 +1,25 @@
+{
+  "name": "foobot-messenger",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Brymastr/foobot-messenger.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Brymastr/foobot-messenger/issues"
+  },
+  "homepage": "https://github.com/Brymastr/foobot-messenger#readme",
+  "dependencies": {
+    "amqplib": "^0.5.1",
+    "request": "^2.79.0",
+    "request-promise-native": "^1.0.3"
+  }
+}
