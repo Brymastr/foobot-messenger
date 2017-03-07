@@ -21,7 +21,7 @@ exports.sendMessage = message => new Promise(resolve => {
       },
       message: {
         text: message.response,
-        attachment: message.reply_markup
+        attachment: message.keyboard
       }
     }
   }).then(resolve).catch(console.warn);
@@ -55,6 +55,29 @@ exports.process = (connection, message) => {
       rabbit.pub(connection, 'internal.message.nlp', m);
     });
   }
+};
+
+function makeKeyboard(keyboard) {
+  return {
+    type: 'template',
+    payload: {
+      template_type: 'button',
+      text: keyboard[0][0].type === 'account_link' ? 'Login to Facebook' : 'This is a button',
+      buttons: makeButtons(keyboard[0]) // messenger can only have one row of buttons
+    }
+  }
+}
+
+function makeButtons(keyboardRow) {
+  return keyboardRow.map(b => {
+    let button = {
+      url: b.url
+    };
+    if(b.type === 'account_link') {
+      button.type = 'account_link';
+    }
+    return button;
+  });
 }
 
 exports.normalize = update => new Promise(resolve => {
