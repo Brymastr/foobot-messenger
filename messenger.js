@@ -20,7 +20,7 @@ exports.sendMessage = message => new Promise(resolve => {
         id: message.chat_id,
       },
       message: {
-        text: message.response,
+        text: message.keyboard.length > 0 ? null : message.response,
         attachment: message.keyboard.length > 0 ? makeKeyboard(message.keyboard) : null,
       }
     }
