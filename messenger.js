@@ -21,7 +21,7 @@ exports.sendMessage = message => new Promise(resolve => {
       },
       message: {
         text: message.response,
-        attachment: message.keyboard
+        attachment: message.keyboard.length > 0 ? makeKeyboard(message.keyboard) : null,
       }
     }
   }).then(resolve).catch(console.warn);
