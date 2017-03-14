@@ -46,15 +46,29 @@ exports.sendTyping = message => new Promise(resolve => {
   }).catch(console.warn);
 });
 
-exports.process = (connection, message) => {
-  if(message._id) {
-    if(message.response || message.keyboard.length > 0)
-      this.send(message);
-  } else {
-    this.normalize(message).then(m => {
-      rabbit.pub(connection, 'internal.message.nlp', m);
-    });
+exports.process = (connection, queueMessage) => {
+  let message = JSON.parse(message.content.toString());
+  if(!queueMessage.fields.routingKey) return;
+  let route = queueMessage.fields.routingKey.split('.')[0];
+
+  switch(route) {
+    
+    case 'incoming':
+      this.normalize(message).then(m => {
+        rabbit.pub(connection, 'internal.message.nlp', m);
+      });
+      break;
+
+    case 'outgoing':
+      if(message.response || message.keyboard.length > 0)
+        this.send(message);
+      break;
+
+    default:
+      console.log('routing key not implemented');
+      
   }
+  
 };
 
 function makeKeyboard(keyboard) {
