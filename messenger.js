@@ -47,7 +47,7 @@ exports.sendTyping = message => new Promise(resolve => {
 });
 
 exports.process = (connection, queueMessage) => {
-  let message = JSON.parse(message.content.toString());
+  let message = JSON.parse(queueMessage.content.toString());
   if(!queueMessage.fields.routingKey) return;
   let route = queueMessage.fields.routingKey.split('.')[0];
 
@@ -68,7 +68,7 @@ exports.process = (connection, queueMessage) => {
       console.log('routing key not implemented');
       
   }
-  
+
 };
 
 function makeKeyboard(keyboard) {
